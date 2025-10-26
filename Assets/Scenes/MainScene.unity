@@ -743,8 +743,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardPrefab: {fileID: 6594836927111556883, guid: fb1f71b99b4e47b48a70aa5d9ad825c5, type: 3}
-  _minGridRange: 2
-  _maxGridRange: 4
+  _gridRangeX: {x: 2, y: 4}
+  _gridRangeY: {x: 3, y: 7}
   _grid: {fileID: 1872416833}
 --- !u!1 &788219723
 GameObject:

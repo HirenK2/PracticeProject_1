@@ -13,7 +13,8 @@ public class LevelGenerator : MonoBehaviour
     #region PRIVATE_VARS
 
     [SerializeField] private Card _cardPrefab;
-    [SerializeField][Range(2, 4)] private int _minGridRange, _maxGridRange;
+    [SerializeField] private Vector2Int _gridRangeX;
+    [SerializeField] private Vector2Int _gridRangeY;
     [SerializeField] private GridLayoutGroup _grid;
 
     private LevelData _currentLevelData;
@@ -30,19 +31,19 @@ public class LevelGenerator : MonoBehaviour
     [ContextMenu("GenerateRandomLevel")]
     public void GenerateRandomLevel()
     {
-        _currentLevelData.gridSizeX = Random.Range(_minGridRange, _maxGridRange + 1);
-        _currentLevelData.gridSizeY = Random.Range(_minGridRange, _maxGridRange + 1);
+        _currentLevelData.gridSizeX = Random.Range(_gridRangeX.x, _gridRangeX.y + 1);
+        _currentLevelData.gridSizeY = Random.Range(_gridRangeY.x, _gridRangeY.y + 1);
 
         int totalRequiredCardCount = _currentLevelData.gridSizeX * _currentLevelData.gridSizeY;
         if (totalRequiredCardCount % 2 != 0)
         {
-            if (_currentLevelData.gridSizeX < _maxGridRange)
+            if (_currentLevelData.gridSizeY < _gridRangeY.y)
             {
-                _currentLevelData.gridSizeX++;
+                _currentLevelData.gridSizeY++;
             }
             else
             {
-                _currentLevelData.gridSizeX--;
+                _currentLevelData.gridSizeY--;
             }
             totalRequiredCardCount = _currentLevelData.gridSizeX * _currentLevelData.gridSizeY;
         }

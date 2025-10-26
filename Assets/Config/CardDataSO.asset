@@ -29,3 +29,7 @@ MonoBehaviour:
     cardColor: {r: 1, g: 0.5067103, b: 0, a: 1}
   - cardId: 7
     cardColor: {r: 0.6660867, g: 0, b: 1, a: 1}
+  - cardId: 8
+    cardColor: {r: 0.43667656, g: 0.5773585, b: 0.14706294, a: 1}
+  - cardId: 9
+    cardColor: {r: 0.7509433, g: 0.2893342, b: 0.15727304, a: 1}
