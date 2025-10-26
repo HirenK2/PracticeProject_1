@@ -1,11 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelGenerator : MonoBehaviour
 {
     #region PUBLIC_VARS
+
+    public int totalPairCount { get; private set; }
+
     #endregion
 
     #region PRIVATE_VARS
@@ -32,7 +34,7 @@ public class LevelGenerator : MonoBehaviour
         _currentLevelData.gridSizeY = Random.Range(_minGridRange, _maxGridRange + 1);
 
         int totalRequiredCardCount = _currentLevelData.gridSizeX * _currentLevelData.gridSizeY;
-        if(totalRequiredCardCount % 2 != 0)
+        if (totalRequiredCardCount % 2 != 0)
         {
             if (_currentLevelData.gridSizeX < _maxGridRange)
             {
@@ -44,10 +46,10 @@ public class LevelGenerator : MonoBehaviour
             }
             totalRequiredCardCount = _currentLevelData.gridSizeX * _currentLevelData.gridSizeY;
         }
-
+        totalPairCount = totalRequiredCardCount / 2;
         _grid.constraintCount = Mathf.Max(_currentLevelData.gridSizeX, _currentLevelData.gridSizeY);
 
-        GenerateRandomIdPool(totalRequiredCardCount / 2);
+        GenerateRandomIdPool(totalPairCount);
 
         if (totalRequiredCardCount >= _spawnedCardList.Count)
         {
