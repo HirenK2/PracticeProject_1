@@ -34,7 +34,7 @@ public class ButtonAudio : MonoBehaviour
 
     private void PlayButtonClickAudio()
     {
-        AudioManager.Instance.PlaySFX(AudioManager.AudioTag.BUTTON_CLICK, 1f);
+        AudioManager.Instance.PlaySFX(_audioTag, 1f);
     }
 
     #endregion
