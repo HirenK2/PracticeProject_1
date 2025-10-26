@@ -12,8 +12,10 @@ public class GameManager : MonoBehaviour
 
     public static Action<int> OnTurnIncr;
     public static Action<int> OnPairMatch;
+    public static Action<int> OnComboIncr;
+    public static Action<int> OnHighestComboIncr;
 
-    public LevelGenerator LevelGenerator { get {  return _levelGenerator; } }
+    public LevelGenerator LevelGenerator { get { return _levelGenerator; } }
 
     #endregion
 
@@ -23,8 +25,58 @@ public class GameManager : MonoBehaviour
 
     private Queue<Card> _flippedCards = new Queue<Card>();
 
-    private int _currentMatchCount;
+    private int CurrentPairCount
+    {
+        get { return _currentPairCount; }
+        set
+        {
+            _currentPairCount = value;
+            OnPairMatch?.Invoke(value);
+        }
+    }
+    private int _currentPairCount;
+    
+    private int CurrentTurnCount
+    {
+        get { return _currentTurnCount; }
+        set
+        {
+            _currentTurnCount = value;
+            OnTurnIncr?.Invoke(value);
+        }
+    }
     private int _currentTurnCount;
+
+    private int CurrentComboCounter
+    {
+        get { return _currentcomboCounter; }
+        set 
+        {
+            _currentcomboCounter = value;
+            OnComboIncr?.Invoke(value);
+        }
+    }
+    private int _currentcomboCounter;
+
+    private int HighestComboScore
+    {
+        get
+        {
+            if (_highestComboScore == -1)
+            {
+                _highestComboScore = PlayerPrefs.GetInt(HIGHEST_COMBO_SCORE, 0);
+            }
+            return _highestComboScore;
+        }
+        set
+        {
+            _highestComboScore = value;
+            PlayerPrefs.SetInt(HIGHEST_COMBO_SCORE, _highestComboScore);
+            OnHighestComboIncr?.Invoke(value);
+        }
+    }
+    private int _highestComboScore = -1;
+    private const string HIGHEST_COMBO_SCORE = "HighestComboScoreKey";
 
     #endregion
 
@@ -32,7 +84,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -48,7 +100,7 @@ public class GameManager : MonoBehaviour
 
     public void AddToQueue(Card card)
     {
-        if(_flippedCards.Count % 2 == 0)
+        if (_flippedCards.Count % 2 == 0)
         {
             _flippedCards.Enqueue(card);
         }
@@ -62,6 +114,7 @@ public class GameManager : MonoBehaviour
     {
         _levelGenerator.GenerateRandomLevel();
         UiManager.Instance.OnGameStart();
+        CurrentComboCounter = 0;
         Invoke(nameof(CardFlipBackOnGameStart), _levelGenerator.currentInitialCardFlipWaitTime);
     }
 
@@ -71,32 +124,49 @@ public class GameManager : MonoBehaviour
 
     private void CardFlipBackOnGameStart()
     {
+        OnHighestComboIncr?.Invoke(HighestComboScore);
         _levelGenerator.FlipAllCards();
     }
 
     private void CheckForMatch(Card card)
     {
-        _currentTurnCount++;
-        OnTurnIncr?.Invoke(_currentTurnCount);
+        CurrentTurnCount++;
+
         if (_flippedCards.Peek().GetCardId() == card.GetCardId())
         {
             _flippedCards.Dequeue().OnCardMatched();
             card.OnCardMatched();
 
-            _currentMatchCount++;
-            OnPairMatch?.Invoke(_currentMatchCount);
+            CurrentPairCount++;
+            HandleComboScore();
+
             CheckForGameOver();
         }
         else
         {
+            CurrentComboCounter = 0;
+
             _flippedCards.Dequeue().OnCardMissmatched();
             card.OnCardMissmatched();
         }
     }
 
+    private void HandleComboScore()
+    {
+        _currentcomboCounter++;
+        if(_currentcomboCounter > 1)
+        {
+            OnComboIncr?.Invoke(_currentcomboCounter);
+            if(_currentcomboCounter > HighestComboScore)
+            {
+                HighestComboScore = _currentcomboCounter;
+            }
+        }
+    }
+
     private void CheckForGameOver()
     {
-        if(_currentMatchCount == _levelGenerator.totalPairCount)
+        if (_currentPairCount == _levelGenerator.totalPairCount)
         {
             ResetStats();
             UiManager.Instance.OnGameOver();
@@ -105,8 +175,9 @@ public class GameManager : MonoBehaviour
 
     private void ResetStats()
     {
-        _currentMatchCount = 0;
+        _currentPairCount = 0;
         _currentTurnCount = 0;
+        _currentcomboCounter = 0;
         _flippedCards.Clear();
     }
 

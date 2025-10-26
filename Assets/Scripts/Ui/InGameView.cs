@@ -10,6 +10,8 @@ public class InGameView : BaseView
 
     [SerializeField] private Text _pairScoreText;
     [SerializeField] private Text _turnCountText;
+    [SerializeField] private Text _comboCountText;
+    [SerializeField] private Text _highestComboCountText;
 
     #endregion
 
@@ -19,12 +21,16 @@ public class InGameView : BaseView
     {
         GameManager.OnTurnIncr += SetTurnText;
         GameManager.OnPairMatch += SetPairText;
+        GameManager.OnComboIncr += SetComboText;
+        GameManager.OnHighestComboIncr += SetHighestComboText;
     }
 
     private void OnDisable()
     {
         GameManager.OnTurnIncr -= SetTurnText;
         GameManager.OnPairMatch -= SetPairText;
+        GameManager.OnComboIncr -= SetComboText;
+        GameManager.OnHighestComboIncr -= SetHighestComboText;
     }
 
     #endregion
@@ -46,6 +52,16 @@ public class InGameView : BaseView
     public void SetTurnText(int turnCount)
     {
         _turnCountText.text = turnCount.ToString();
+    }
+
+    public void SetComboText(int comboCounter)
+    {
+        _comboCountText.text = $"x{comboCounter}";
+    }
+
+    public void SetHighestComboText(int highestComboCount)
+    {
+        _highestComboCountText.text = $"x{highestComboCount}";
     }
 
     #endregion
