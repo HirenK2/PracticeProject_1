@@ -2153,6 +2153,9 @@ MonoBehaviour:
   - audioTagString: BUTTON_CLICK
     audioTag: 4
     clip: {fileID: 8300000, guid: 40ac02689dbd1d94e94e122f227ffa4d, type: 3}
+  - audioTagString: GAME_OVER
+    audioTag: 5
+    clip: {fileID: 8300000, guid: 085d053509508644bac3e9f760705f74, type: 3}
 --- !u!1 &1854522050
 GameObject:
   m_ObjectHideFlags: 0

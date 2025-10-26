@@ -170,6 +170,7 @@ public class GameManager : MonoBehaviour
         {
             ResetStats();
             UiManager.Instance.OnGameOver();
+            AudioManager.Instance.PlaySFX(AudioManager.AudioTag.GAME_OVER, 1f);
         }
     }
 

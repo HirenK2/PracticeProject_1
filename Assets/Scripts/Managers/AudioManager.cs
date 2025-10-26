@@ -73,14 +73,15 @@ public class AudioManager : MonoBehaviour
         CARD_FLIP,
         CARD_MATCH,
         CARD_MISSMATCH,
-        BUTTON_CLICK
+        BUTTON_CLICK,
+        GAME_OVER
     }
 
     [Serializable]
     public struct AudioData
     {
 #if UNITY_EDITOR
-        public string audioTagString;
+        [HideInInspector] public string audioTagString;
         public void SetTagInString()
         {
             audioTagString = audioTag.ToString();
