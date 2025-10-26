@@ -12,7 +12,11 @@ public class GameManager : MonoBehaviour
 
     #region PRIVATE_VARS
 
+    [SerializeField] private LevelGenerator _levelGenerator;
+
     private Queue<Card> _flippedCards = new Queue<Card>();
+
+    private int _currentMatchCount;
 
     #endregion
 
@@ -52,7 +56,7 @@ public class GameManager : MonoBehaviour
 
     private void CheckForMatch(Card card)
     {
-        if(_flippedCards.Peek().GetCardId() == card.GetCardId())
+        if (_flippedCards.Peek().GetCardId() == card.GetCardId())
         {
             _flippedCards.Dequeue().OnCardMatched();
             card.OnCardMatched();
@@ -62,7 +66,6 @@ public class GameManager : MonoBehaviour
             _flippedCards.Dequeue().OnCardMissmatched();
             card.OnCardMissmatched();
         }
-
     }
 
     #endregion

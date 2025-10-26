@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class Card : MonoBehaviour, IPointerDownHandler
 {
     #region PUBLIC_VARS
     #endregion
@@ -9,11 +10,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     #region PRIVATE_VARS
     
     [SerializeField] private int _cardId;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Image _image;
     [SerializeField] private Animator _animator;
     private bool _isRevealed = false;
     private bool _isFlipAnimationRunning = false;
-    private bool _isMissmatched = false;
 
     private static int _cardFlipAnimHash = Animator.StringToHash(GameConstants.CARD_FLIP_ANIM);
     private static int _cardMatchAnimHash = Animator.StringToHash(GameConstants.CARD_MATCH_ANIM);
@@ -25,11 +25,6 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log($"Pointer Down on {_cardId}");
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
         OnCardClick();
     }
 
@@ -39,8 +34,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void Init(int id)
     {
+        ResetCard();
         _cardId = id;
         SetCardColor();
+        SetActiveVisuals(true);
     }
 
     public int GetCardId()
@@ -62,6 +59,16 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     #region PRIVATE_METHODS
 
+    private void ResetCard()
+    {
+        _cardId = -1;
+        _isRevealed = false;
+        _isFlipAnimationRunning = false;
+        SetCardColor();
+        _image.transform.localRotation = Quaternion.identity;
+        _image.transform.localScale = Vector3.one;
+    }
+
     private void OnCardClick()
     {
         if (_isRevealed || _isFlipAnimationRunning)
@@ -69,7 +76,6 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             return;
         }
 
-        _isMissmatched = false;
         FlipCard();
     }
 
@@ -77,11 +83,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (_isRevealed)
         {
-            _spriteRenderer.color = GameManager.Instance.cardDataSO.GetCardColor(_cardId);
+            _image.color = GameManager.Instance.cardDataSO.GetCardColor(_cardId);
         }
         else
         {
-            _spriteRenderer.color = Color.black;
+            _image.color = Color.black;
         }
     }
 
@@ -89,6 +95,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         _isFlipAnimationRunning = true;
         _animator.Play(_cardFlipAnimHash);
+    }
+
+    private void SetActiveVisuals(bool value)
+    {
+        _image.gameObject.SetActive(value);
     }
 
     #endregion
@@ -110,7 +121,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void OnCardFlipAnimationComplete()
     {
         _isFlipAnimationRunning = false;
-        if(!_isMissmatched)
+        if(_isRevealed)
         {
             GameManager.Instance.AddToQueue(this);
         }
@@ -118,12 +129,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void OnCardMatchAnimationComplete()
     {
-        gameObject.SetActive(false);
+        SetActiveVisuals(false);
     }
 
     private void OnCardMissmatchAnimationComplete()
     {
-        _isMissmatched = true;
         FlipCard();
     }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CardDataSO", menuName = "Scriptable/CardDataSO")]
@@ -9,6 +10,9 @@ public class CardDataSO : ScriptableObject
     #region PRIVATE_VARS
 
     [SerializeField] private CardData[] _cardDatas;
+
+    private int[] _allAvailableIds = new int[0];
+
     #endregion
 
     #region UNITY_CALLBACKS
@@ -28,9 +32,34 @@ public class CardDataSO : ScriptableObject
         return Color.white;
     }
 
+    public int GetRandomCardId()
+    {
+        if(_allAvailableIds.Length == 0)
+        {
+            FetchIds();
+        }
+        return _allAvailableIds[Random.Range(0, _allAvailableIds.Length)];
+    }
+
+    public int[] GetAllAvailableIds()
+    {
+        if(_allAvailableIds.Length == 0)
+        {
+            FetchIds();
+        }
+        return _allAvailableIds;
+    }
+
     #endregion
 
     #region PRIVATE_METHODS
+
+    [ContextMenu("FetchAvailableIds")]
+    private void FetchIds()
+    {
+        _allAvailableIds = _cardDatas.Select(x => x.cardId).ToArray();
+    }
+
     #endregion
 
     #region COROUTINES

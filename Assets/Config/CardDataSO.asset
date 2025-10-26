@@ -23,3 +23,9 @@ MonoBehaviour:
     cardColor: {r: 0.99728537, g: 1, b: 0, a: 1}
   - cardId: 4
     cardColor: {r: 1, g: 0, b: 0.9639435, a: 1}
+  - cardId: 5
+    cardColor: {r: 0, g: 0.9861362, b: 1, a: 1}
+  - cardId: 6
+    cardColor: {r: 1, g: 0.5067103, b: 0, a: 1}
+  - cardId: 7
+    cardColor: {r: 0.6660867, g: 0, b: 1, a: 1}
