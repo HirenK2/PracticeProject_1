@@ -7,6 +7,7 @@ public class LevelGenerator : MonoBehaviour
     #region PUBLIC_VARS
 
     public int totalPairCount { get; private set; }
+    public float currentInitialCardFlipWaitTime { get; private set; }
 
     #endregion
 
@@ -48,6 +49,8 @@ public class LevelGenerator : MonoBehaviour
             totalRequiredCardCount = _currentLevelData.gridSizeX * _currentLevelData.gridSizeY;
         }
         totalPairCount = totalRequiredCardCount / 2;
+        currentInitialCardFlipWaitTime = totalPairCount / GameManager.Instance.initialFlipWaitTimeRatioByPair;
+
         _grid.constraintCount = Mathf.Max(_currentLevelData.gridSizeX, _currentLevelData.gridSizeY);
 
         GenerateRandomIdPool(totalPairCount);
@@ -78,6 +81,14 @@ public class LevelGenerator : MonoBehaviour
                     _spawnedCardList.RemoveAt(i);
                 }
             }
+        }
+    }
+
+    public void FlipAllCards()
+    {
+        for (int i = 0; i < _spawnedCardList.Count; i++)
+        {
+            _spawnedCardList[i].FlipCard();
         }
     }
 

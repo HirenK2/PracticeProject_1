@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
     public CardDataSO cardDataSO;
+    public float initialFlipWaitTimeRatioByPair = 3;
 
     public static Action<int> OnTurnIncr;
     public static Action<int> OnPairMatch;
@@ -61,11 +62,17 @@ public class GameManager : MonoBehaviour
     {
         _levelGenerator.GenerateRandomLevel();
         UiManager.Instance.OnGameStart();
+        Invoke(nameof(CardFlipBackOnGameStart), _levelGenerator.currentInitialCardFlipWaitTime);
     }
 
     #endregion
 
     #region PRIVATE_METHODS
+
+    private void CardFlipBackOnGameStart()
+    {
+        _levelGenerator.FlipAllCards();
+    }
 
     private void CheckForMatch(Card card)
     {
