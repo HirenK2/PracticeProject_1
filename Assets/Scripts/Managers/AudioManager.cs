@@ -30,7 +30,17 @@ public class AudioManager : MonoBehaviour
         }    
     }
 
-    #endregion
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        for (int i = 0; i < _audioData.Length; i++)
+        {
+            _audioData[i].SetTagInString();
+        }
+    }
+#endif
+
+#endregion
 
     #region PUBLIC_METHODS
 
@@ -69,6 +79,13 @@ public class AudioManager : MonoBehaviour
     [Serializable]
     public struct AudioData
     {
+#if UNITY_EDITOR
+        public string audioTagString;
+        public void SetTagInString()
+        {
+            audioTagString = audioTag.ToString();
+        }
+#endif
         public AudioTag audioTag;
         public AudioClip clip;
     }
