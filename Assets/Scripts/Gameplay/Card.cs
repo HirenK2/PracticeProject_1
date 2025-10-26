@@ -12,12 +12,13 @@ public class Card : MonoBehaviour, IPointerDownHandler
     [SerializeField] private int _cardId;
     [SerializeField] private Image _image;
     [SerializeField] private Animator _animator;
-    private bool _isRevealed = false;
+    private bool _isRevealed = true;
     private bool _isFlipAnimationRunning = false;
 
     private static int _cardFlipAnimHash = Animator.StringToHash(GameConstants.CARD_FLIP_ANIM);
     private static int _cardMatchAnimHash = Animator.StringToHash(GameConstants.CARD_MATCH_ANIM);
     private static int _cardMissmatchAnimHash = Animator.StringToHash(GameConstants.CARD_MISSMATCH_ANIM);
+    private static string IsRevealedAnimBool = "IsRevealed";
 
     #endregion
 
@@ -53,6 +54,14 @@ public class Card : MonoBehaviour, IPointerDownHandler
     public void OnCardMissmatched()
     {
         _animator.Play(_cardMissmatchAnimHash);
+        AudioManager.Instance.PlaySFX(AudioManager.AudioTag.CARD_MISSMATCH, 0.5f);
+    }
+
+    public void FlipCard()
+    {
+        _isFlipAnimationRunning = true;
+        _animator.Play(_cardFlipAnimHash);
+        AudioManager.Instance.PlaySFX(AudioManager.AudioTag.CARD_FLIP, 0.2f);
     }
 
     #endregion
@@ -62,7 +71,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
     private void ResetCard()
     {
         _cardId = -1;
-        _isRevealed = false;
+        _isRevealed = true;
         _isFlipAnimationRunning = false;
         SetCardColor();
         _image.transform.localRotation = Quaternion.identity;
@@ -76,6 +85,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
             return;
         }
 
+        AudioManager.Instance.PlaySFX(AudioManager.AudioTag.CARD_CLICK);
         FlipCard();
     }
 
@@ -89,12 +99,6 @@ public class Card : MonoBehaviour, IPointerDownHandler
         {
             _image.color = Color.black;
         }
-    }
-
-    private void FlipCard()
-    {
-        _isFlipAnimationRunning = true;
-        _animator.Play(_cardFlipAnimHash);
     }
 
     private void SetActiveVisuals(bool value)
@@ -115,6 +119,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
     private void OnCardFlipMidPoint()
     {
         _isRevealed = !_isRevealed;
+        _animator.SetBool(IsRevealedAnimBool, _isRevealed);
         SetCardColor();
     }
 
@@ -125,6 +130,11 @@ public class Card : MonoBehaviour, IPointerDownHandler
         {
             GameManager.Instance.AddToQueue(this);
         }
+    }
+
+    private void CardMatchAudioPlayMidAnimation()
+    {
+        AudioManager.Instance.PlaySFX(AudioManager.AudioTag.CARD_MATCH, 1f);
     }
 
     private void OnCardMatchAnimationComplete()
