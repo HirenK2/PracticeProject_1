@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public static Action<int> OnTurnIncr;
     public static Action<int> OnPairMatch;
 
+    public LevelGenerator LevelGenerator { get {  return _levelGenerator; } }
+
     #endregion
 
     #region PRIVATE_VARS

@@ -40,7 +40,7 @@ public class InGameView : BaseView
 
     public void SetPairText(int pairCount)
     {
-        _pairScoreText.text = pairCount.ToString();
+        _pairScoreText.text = $"{pairCount} out of {GameManager.Instance.LevelGenerator.totalPairCount}";
     }
 
     public void SetTurnText(int turnCount)
